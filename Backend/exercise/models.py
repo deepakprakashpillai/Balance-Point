@@ -51,6 +51,7 @@ class WorkoutExercise(models.Model):
         ('medium','Medium'),
         ('high','High')
     ]
+
     workout_session = models.ForeignKey(WorkoutSession,on_delete=models.CASCADE,related_name='workout_exercises')
     exercise = models.ForeignKey(Exercise,on_delete=models.CASCADE)
     intensity = models.CharField(max_length=15,choices = INTENSITY_CHOICES)
