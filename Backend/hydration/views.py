@@ -20,7 +20,6 @@ class HydrationLogViewset(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['GET'])
     def total_water_intake(self, request, user_id=None):
-        # Check if a user ID is provided
         if user_id:
             total = self.get_queryset().filter(user=user_id).aggregate(total_intake=Sum('amount'))['total_intake'] or 0
             return Response({"user": user_id, "total_water_intake": total})

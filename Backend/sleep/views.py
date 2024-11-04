@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets,status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Sum,Avg
 from .models import SleepLog
 from .serializers import SleepLogSerializer
+from django.db.models.functions import TruncDate
+from datetime import datetime, timedelta
 
 class SleepLogViewset(viewsets.ModelViewSet):
     serializer_class=SleepLogSerializer
@@ -13,17 +15,31 @@ class SleepLogViewset(viewsets.ModelViewSet):
         return SleepLog.objects.all().order_by('-sleep_start')
 
     @action(detail=False, methods=['GET'])
-    def sleep_analysis(self, request):
-        sleep_logs = self.get_queryset()
-        total_duration = sum([(log.sleep_end - log.sleep_start).total_seconds() for log in sleep_logs], 0)
-        total_duration_hours=total_duration/3600
-        total_sleep_logs = sleep_logs.count()
+    def sleep_analysis(self, request,user_id=None):
+       
+        sleep_logs = SleepLog.objects.filter(user=user_id)
+        # print(sleep_logs[0].sleep_start)
 
-        average_quality = sleep_logs.aggregate(Avg('quality'))['quality__avg'] or 0
+        daily_summary = []
+        tot_dur = timedelta()
+        for log in sleep_logs:
+            tot_dur+=log.duration
+            dt = datetime.fromisoformat(str(log.sleep_start))
+            daily_summary.append({
+                'date':dt.date(),
+                'duration':log.duration
+            })
 
+        qualities = [i.quality for i in sleep_logs]
+
+
+
+        if not sleep_logs.exists():
+            return Response({"message": "No sleep logs found for the specified user"}, status=status.HTTP_404_NOT_FOUND)
         return Response({
-            "total_sleep_logs": total_sleep_logs,
-            "total_duration": total_duration_hours,  
-            "average_quality": average_quality,
+            "user_id": user_id,
+            "daily_sleep_summary": daily_summary,
+            "average_quality":sum(qualities)/len(qualities),
+            "total_duration":tot_dur
         })
 # Create your views here.
