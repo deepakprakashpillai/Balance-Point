@@ -1,11 +1,11 @@
+from sysconfig import is_python_build
 from django.shortcuts import render
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import Sum,Avg
 from .models import SleepLog
 from .serializers import SleepLogSerializer
-from django.db.models.functions import TruncDate
+
 from datetime import datetime, timedelta
 
 class SleepLogViewset(viewsets.ModelViewSet):
@@ -42,4 +42,6 @@ class SleepLogViewset(viewsets.ModelViewSet):
             "average_quality":sum(qualities)/len(qualities),
             "total_duration":tot_dur
         })
+
+
 # Create your views here.
