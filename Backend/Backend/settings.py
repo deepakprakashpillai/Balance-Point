@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'exercise',
     'diet',
+    'sleep','hydration','diary'
 ]
 
 MIDDLEWARE = [
