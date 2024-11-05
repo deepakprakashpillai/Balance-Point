@@ -1,7 +1,7 @@
 from pyexpat import model
 from django.db import models
 from django.contrib.auth import get_user_model
-from multiselectfield import MultiSelectField  # Make sure to install this package
+from multiselectfield import MultiSelectField  
 
 User = get_user_model()
 
