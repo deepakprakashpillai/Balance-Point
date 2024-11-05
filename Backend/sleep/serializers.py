@@ -13,3 +13,5 @@ class SleepLogSerializer(serializers.ModelSerializer):
         def create(self,validate_data):
             validate_data['duration']=validate_data['sleep_end']-validate_data['sleep_start']
             return super.create(validate_data)
+
+
