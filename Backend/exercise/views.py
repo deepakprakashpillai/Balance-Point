@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Exercise,WorkoutSession
@@ -10,8 +11,10 @@ from .serializers import ExerciseSerializer,WorkoutSessionSerializer
 class ExerciseView(ModelViewSet):
     serializer_class = ExerciseSerializer
     queryset = Exercise.objects.all()
+    permission_classes = [IsAuthenticated]
     
-    
+
+
 @api_view(['POST','GET','DELETE','PATCH'])
 def workout_session_view(request,id=None):
     if request.method == 'POST':
@@ -37,8 +40,10 @@ def workout_session_view(request,id=None):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
-    
+
+
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def user_sessions_view(request,id):
     try:
         sessions = WorkoutSession.objects.filter(user = id)

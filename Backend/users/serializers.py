@@ -28,7 +28,10 @@ class UserSerializer(ModelSerializer):
         
     def create(self, validated_data):
         user_assessment = validated_data.pop("user_assessment",None)
+        password = validated_data.pop("password")
         user_obj = User.objects.create(**validated_data)
+        user_obj.set_password(password)
+        user_obj.save()
         if user_assessment:
             user_assessment_obj = UserAssessment.objects.create(user=user_obj,**user_assessment)
         return user_obj

@@ -8,4 +8,5 @@ urlpatterns = [
     path('', include('sleep.urls')),
     path('', include('hydration.urls')),
     path('', include('diary.urls')),
+    path('user/',include('users.urls'))
 ]
