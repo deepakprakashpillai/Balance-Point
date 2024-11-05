@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'exercise',
     'diet',
     'sleep','hydration','diary',
-    'users'
+    'users',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -41,6 +42,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'Backend.urls'
@@ -132,3 +135,5 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,                      
     'AUTH_HEADER_TYPES': ('Bearer',),             
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
