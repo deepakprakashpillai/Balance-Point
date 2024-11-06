@@ -5,7 +5,7 @@ class SleepLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = SleepLog
         fields = ['user', 'sleep_start', 'sleep_end', 'duration', 'quality', 'interrupted']
-        read_only_fields = ['user', 'duration']
+        read_only_fields = ['duration']
 
     def create(self, validated_data):
         sleep_start = validated_data['sleep_start']
