@@ -8,6 +8,7 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
     age = models.IntegerField(default=0)
+    city = models.CharField(max_length=50, null=True, blank=True)
     
     def __str__(self):
         return self.first_name + " " + self.last_name
