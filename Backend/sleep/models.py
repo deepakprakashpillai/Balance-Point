@@ -13,13 +13,9 @@ class SleepLog(models.Model):
     interrupted=models.BooleanField(default=False)
 
 
-    def save(self):
-        self.calculate_sleep_duration()
-        return super().save()
 
-    def calculate_sleep_duration(self):
-        duration = (self.sleep_end - self.sleep_start) / 3600
-        self.duration = duration
+
+
 
 
 
