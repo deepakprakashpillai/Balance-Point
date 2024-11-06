@@ -6,4 +6,4 @@ class HydrationLogSerializer(serializers.ModelSerializer):
     class Meta:
         model=HydrationLog
         fields=['id','user','amount','timestamp']
-        read_only_fields=['timestamp']
+        
