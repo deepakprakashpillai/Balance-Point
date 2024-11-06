@@ -14,26 +14,21 @@ class UserAssessmentSerializer(ModelSerializer):
     class Meta:
         model = UserAssessment
         fields = '__all__'
-        extra_kwargs = {'user': {'required': False}}
      
 
 
 class UserSerializer(ModelSerializer): 
-    user_assessment = UserAssessmentSerializer() 
     password = serializers.CharField(write_only=True)
 
     class Meta: 
         model = User 
-        fields = ['first_name', 'last_name', 'email', 'username', 'password','date_joined', 'gender', 'phone_number', 'age', 'dob', 'height', 'weight', 'user_assessment'] 
+        fields = ['first_name', 'last_name', 'email', 'username', 'password','date_joined', 'gender', 'phone_number', 'age', 'dob'] 
         
     def create(self, validated_data):
-        user_assessment = validated_data.pop("user_assessment",None)
         password = validated_data.pop("password")
         user_obj = User.objects.create(**validated_data)
         user_obj.set_password(password)
         user_obj.save()
-        if user_assessment:
-            user_assessment_obj = UserAssessment.objects.create(user=user_obj,**user_assessment)
         return user_obj
     
     

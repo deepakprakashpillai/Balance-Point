@@ -15,9 +15,8 @@ def calculate_age(sender,instance,created,**kwargs):
 @receiver(post_save, sender=UserAssessment)
 def calculate_rmr_bmi(sender, instance, created, **kwargs):
     if created:
-        # Get user details
-        weight_kg = instance.user.weight
-        height_cm = instance.user.height
+        weight_kg = instance.weight
+        height_cm = instance.height
         age = instance.user.age
 
         # Check if weight and height are not None
@@ -32,11 +31,10 @@ def calculate_rmr_bmi(sender, instance, created, **kwargs):
             else:
                 instance.rmr = 10 * weight_kg + 6.25 * height_cm - 5 * age - 161
             
-            height_m = height_cm / 100  # Convert height from cm to meters
-            if height_m > 0:  # Ensure height is not zero
+            height_m = height_cm / 100  
+            if height_m > 0: 
                 bmi = weight_kg / (height_m ** 2)
-                instance.bmi = bmi  # Assuming you have a bmi field in UserAssessment model
+                instance.bmi = bmi 
             else:
-                instance.bmi = None  # Handle case where height is zero or invalid
-            # Save the UserAssessment instance with the calculated RMR
+                instance.bmi = None  
             instance.save()
