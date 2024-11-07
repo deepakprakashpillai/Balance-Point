@@ -8,6 +8,7 @@ router.register(r'assessment',AssessmentView,basename='assessment')
 
 
 urlpatterns = [
+    path('',user_view),
     path('register/',user_view),
     path('<int:id>/',user_view),
     path('change-password/',change_password_view),

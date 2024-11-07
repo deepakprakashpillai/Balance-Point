@@ -1,7 +1,8 @@
 from functools import partial
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
@@ -13,9 +14,13 @@ User = get_user_model()
 # Create your views here.
 
 @api_view(['GET','PATCH','POST'])
+@permission_classes([IsAuthenticated])
 def user_view(request,id=None):
     if request.method == 'GET':
-        user_obj = get_object_or_404(User,pk=id)
+        if id == None:
+            user_obj = request.user
+        else:
+            user_obj = get_object_or_404(User,pk=id)
         serializer = UserSerializer(user_obj)
         return Response(serializer.data,status=status.HTTP_200_OK)
     
