@@ -11,7 +11,6 @@ from .serializers import ExerciseSerializer,WorkoutSessionSerializer
 class ExerciseView(ModelViewSet):
     serializer_class = ExerciseSerializer
     queryset = Exercise.objects.all()
-    permission_classes = [IsAuthenticated]
     
 
 
@@ -43,7 +42,6 @@ def workout_session_view(request,id=None):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def user_sessions_view(request,id):
     try:
         sessions = WorkoutSession.objects.filter(user = id)
