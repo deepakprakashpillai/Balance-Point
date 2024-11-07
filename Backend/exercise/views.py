@@ -23,9 +23,9 @@ def workout_session_view(request,id=None):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
-        session_data = get_object_or_404(WorkoutSession,pk=id)
-        serializer = WorkoutSessionSerializer(session_data)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        session_data = WorkoutSession.objects.filter(user=id)
+        serializer = WorkoutSessionSerializer(session_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
         session_data = get_object_or_404(WorkoutSession,pk=id)
         session_data.delete()
