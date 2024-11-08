@@ -11,7 +11,6 @@ class DiaryLogSerializer(serializers.ModelSerializer):
     class Meta:
         model=DiaryLog
         fields=['user','date','mood_descriptors','emotional_rating']
-        read_only_fields=['date']
         
 
 class NewsSerializer(serializers.ModelSerializer):
