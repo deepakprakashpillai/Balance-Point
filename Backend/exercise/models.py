@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -32,7 +33,7 @@ class WorkoutSession(models.Model):
         ('unhappy', 'Unhappy'),
     ]
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now,null=True,blank=True)
     feelings = models.CharField(max_length=15,choices=FEELING_CHOICES)
     total_duration = models.IntegerField(default=0)
     
