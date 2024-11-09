@@ -26,12 +26,11 @@ class DiaryLog(models.Model):
 
 
 
-class News(models.Model):
+class Event(models.Model):
     title=models.CharField(max_length=156)
     content=models.TextField(max_length=256)
     image=models.CharField(max_length=256,null=True)
-    date_published=models.DateTimeField(auto_now_add=True)
-    is_published=models.BooleanField(default=True)
+    date=models.DateTimeField(default=timezone.now,null=True,blank=True)
 
 
 class Counselor(models.Model):

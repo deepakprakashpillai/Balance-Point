@@ -1,6 +1,6 @@
 from dataclasses import fields
 from rest_framework import serializers
-from .models import DiaryLog,News,Counselor
+from .models import DiaryLog,Event,Counselor
 
 class DiaryLogSerializer(serializers.ModelSerializer):
     mood_descriptors=serializers.CharField()
@@ -13,10 +13,10 @@ class DiaryLogSerializer(serializers.ModelSerializer):
         fields=['user','date','mood_descriptors','emotional_rating']
         
 
-class NewsSerializer(serializers.ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model=News
-        fields=['title','content','image','date_published']
+        model=Event
+        fields=['title','content','image','date']
 
 class CounselorSerializer(serializers.ModelSerializer):
     class Meta:
