@@ -13,7 +13,7 @@ from rest_framework import status
 User = get_user_model()
 # Create your views here.
 
-@api_view(['GET','PATCH','POST'])
+@api_view(['GET','PATCH'])
 @permission_classes([IsAuthenticated])
 def user_view(request,id=None):
     if request.method == 'GET':
@@ -34,6 +34,8 @@ def user_view(request,id=None):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         
+@api_view(['POST'])
+def new_user_view(request):
     if request.method == 'POST':
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
