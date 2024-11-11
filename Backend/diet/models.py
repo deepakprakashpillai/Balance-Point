@@ -7,7 +7,7 @@ User = get_user_model()
 class FoodItem(models.Model):
     name = models.CharField(max_length=25)
     calories_per_100g = models.IntegerField()     
-
+    added_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     class Meta:
         verbose_name = ("Food Item")
         verbose_name_plural = ("Food Items")

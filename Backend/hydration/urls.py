@@ -1,13 +1,10 @@
 
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import HydrationLogViewset
+from .views import hydration_log_view,last_drink_time,total_water_intake_by_user
 
-router = DefaultRouter()
-router.register(r'hydration', HydrationLogViewset, basename='hydration')
 
 urlpatterns = [
-    path('',include(router.urls)),
-    path('hydration/last_drink_time/<int:user_id>/', HydrationLogViewset.as_view({'get': 'last_drink_time'}), name='last_drink_time'),
-    path('hydration/total_water_intake_by_user/<int:user_id>/', HydrationLogViewset.as_view({'get': 'total_water_intake_by_user'}), name='total_water_intake_by_user'),
+    path('hydration/<int:user_id>/',hydration_log_view),
+    path('hydration/last_drink_time/<int:user_id>/', last_drink_time),
+    path('hydration/total_water_intake_by_user/<int:user_id>/', total_water_intake_by_user),
 ]

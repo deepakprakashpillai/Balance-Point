@@ -14,6 +14,7 @@ class Exercise(models.Model):
 
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=15, choices=EXERCISE_TYPE_CHOICES)
+    added_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     
     class Meta:
         verbose_name = ("Exercise")

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.utils import timezone
@@ -9,46 +10,60 @@ from django.db.models import Sum
 from datetime import datetime
 from collections import defaultdict
 
-class HydrationLogViewset(viewsets.ModelViewSet):
-    serializer_class = HydrationLogSerializer
+@api_view(['GET','POST'])
+def hydration_log_view(request,user_id=None):
+    if user_id:
+        if request.method == 'GET':
+            logs = HydrationLog.objects.filter(user = user_id).order_by('-timestamp')
+            serializer = HydrationLogSerializer(logs,many=True)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        else:
+            
+            serializer = HydrationLogSerializer(data = request.data)
+            if serializer.is_valid():
+                serializer.save(user_id=user_id)
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                return Response({"message" : "Invalid input"},status=status.HTTP_400_BAD_REQUEST)
+                
+    return Response({"message": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get_queryset(self):
-        return HydrationLog.objects.all().order_by('-timestamp')
 
-    def perform_create(self, serializer):
-        serializer.save()
 
-   
-    @action(detail=False, methods=['GET'])
-    def last_drink_time(self, request, user_id=None):
-        if user_id:
-            last_log = self.get_queryset().filter(user=user_id).first()
-            if last_log:
-                return Response({"last_drink_time": last_log.timestamp})
+@api_view(['GET'])
+def last_drink_time(request, user_id=None):
+    if user_id:
+        last_log = HydrationLog.objects.filter(user=user_id).last() 
+        if last_log:
+            serializer = HydrationLogSerializer(last_log)
+            return Response({"last_drink_time": serializer.data['timestamp']}, status=status.HTTP_200_OK)
+        return Response({"message": "No hydration logs found for this user."}, status=status.HTTP_404_NOT_FOUND) 
+    return Response({"message": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from datetime import datetime
+
+@api_view(['GET'])
+def total_water_intake_by_user(request, user_id=None):
+    if user_id:
+        logs = HydrationLog.objects.filter(user=user_id)
+        
+        # Check if logs exist for the given user_id
+        if not logs.exists():
             return Response({"message": "No hydration logs found for this user."}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response({"message": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['GET'])
-    def total_water_intake_by_user(self, request, user_id=None):
-        if user_id:
-            # Fetch all hydration logs for the user
-            logs = self.get_queryset().filter(user=user_id)
+        serializer = HydrationLogSerializer(logs, many=True)
+        daily_totals = defaultdict(float)
 
-            # Create a dictionary to hold total intake per date
-            daily_totals = defaultdict(float)
+        for log in serializer.data:
+            # Convert the timestamp string to a date
+            date_str = datetime.fromisoformat(log['timestamp']).date()  # Convert string to date
+            daily_totals[date_str] += log['amount']
 
-            # Iterate through logs to sum amounts by date
-            for log in logs:
-                # Get the date part of the timestamp
-                date_str = log.timestamp.date()  # Gets just the date (YYYY-MM-DD)
-                daily_totals[date_str] += log.amount  # Sum the amounts for that date
+        # Prepare the response data
+        result = [{"date": str(date), "total_intake": total} for date, total in daily_totals.items()]
+        return Response({"user": user_id, "daily_totals": result}, status=status.HTTP_200_OK)
 
-            # Prepare the response data
-            result = [{"date": str(date), "total_intake": total} for date, total in daily_totals.items()]
-            return Response({"user": user_id, "daily_totals": result})
-        else:
-            return Response({"message": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"message": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Create your views here.
