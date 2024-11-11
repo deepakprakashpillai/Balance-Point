@@ -15,17 +15,21 @@ class SleepLogViewset(viewsets.ModelViewSet):
     def sleep_analysis(self, request, user_id=None):
         # Filter sleep logs for the specific user
         sleep_logs = SleepLog.objects.filter(user=user_id)
+        print(sleep_logs)
 
         # If there are no sleep logs, return a message
         if not sleep_logs.exists():
             return Response({"message": "No sleep logs found for the specified user"}, status=status.HTTP_404_NOT_FOUND)
+
+        for log in sleep_logs:
+            print(log.duration)
 
         # Calculate total duration (in seconds) and daily summary (in hours)
         total_duration_seconds = sum((log.duration.total_seconds() for log in sleep_logs), 0)
         daily_summary = [
             {
                 'date': log.sleep_start.date(),
-                'duration': log.duration.total_seconds() / 3600  # Duration in hours (convert seconds to hours)
+                'duration': log.duration.total_seconds() / 3600  
             }
             for log in sleep_logs
         ]
@@ -38,5 +42,5 @@ class SleepLogViewset(viewsets.ModelViewSet):
             "user_id": user_id,
             "daily_sleep_summary": daily_summary,
             "average_quality": average_quality,
-            "total_duration": total_duration_seconds  # Send total duration in seconds
+            "total_duration": total_duration_seconds  
         })
