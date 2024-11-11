@@ -10,8 +10,9 @@ class SleepLogSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         sleep_start = validated_data['sleep_start']
         sleep_end = validated_data['sleep_end']
-        # Calculate duration in hours
+       
         duration = sleep_end - sleep_start
         validated_data['duration'] = duration
+        print(duration)
         return super().create(validated_data)
 
