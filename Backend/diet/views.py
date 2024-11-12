@@ -12,6 +12,15 @@ class FoodItemViewset(ModelViewSet):
     queryset = FoodItem.objects.all()
     serializer_class = FoodItemSerializer
     
+@api_view(['GET'])
+def get_food_items_view(request,user_id=None):
+    if user_id:
+        food_items = FoodItem.objects.filter(added_by=user_id)
+        serializer = FoodItemSerializer(food_items,many=True)
+        return Response(serializer.data,status.HTTP_200_OK)
+    else:
+        return Response({'detail': 'No user id was given'}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 @api_view(['POST','GET','DELETE','PATCH'])
 def meal_view(request,id=None):

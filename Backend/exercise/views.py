@@ -12,7 +12,15 @@ class ExerciseView(ModelViewSet):
     serializer_class = ExerciseSerializer
     queryset = Exercise.objects.all()
     
-
+@api_view(['GET'])
+def get_exercises_view(request,user_id=None):
+    if user_id:
+        exercises = Exercise.objects.filter(added_by=user_id)
+        serializer = ExerciseSerializer(exercises,many=True)
+        return Response(serializer.data,status.HTTP_200_OK)
+    else:
+        return Response({'detail': 'No user id was given'}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 @api_view(['POST','GET','DELETE','PATCH'])
 def workout_session_view(request,id=None):
