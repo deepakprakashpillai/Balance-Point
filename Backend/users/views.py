@@ -56,6 +56,14 @@ def change_password_view(request):
     else:
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_assessment_view(request):
+    user = request.user
+    user.is_assessment_completed = True
+    user.save()
+    return Response({"detail" : "Assessment marked as complete"})
+
 
 class AssessmentView(ModelViewSet):
     serializer_class = UserAssessmentSerializer
